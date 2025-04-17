@@ -24,6 +24,9 @@ import {
   Typography,
   AppBar,
   Toolbar,
+  AccordionDetails,
+  AccordionSummary,
+  Accordion,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
@@ -35,7 +38,10 @@ import SnackbarComponent from "../common/SnackbarComponent";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { notificationSound, textToSpeak } from "../enhancements/enhancements";
 import ImageConverterDialog from "./ImageConverterDialog";
-import PhotoFilterIcon from '@mui/icons-material/PhotoFilter';
+import PhotoFilterIcon from "@mui/icons-material/PhotoFilter";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ProgressBar from "../common/ProgressBar";
 
 // Memoized Message Component to prevent unnecessary re-renders
 const MemoizedMessage = React.memo(({ msg, activeUserDetails }) => {
@@ -134,7 +140,11 @@ const ChatAppDB = () => {
   const [activeUserDetails, setActiveUserDetails] = useState({});
   const listRef = useRef(null);
   const totalMsg = useRef(0);
-  const [openImageDialog, setOpenImageDialogue] = useState(false);
+  const childRef = useRef();
+
+  const openImageDialogue = () => {
+    childRef.current.openImageDialogue();
+  };
 
   // Memoize formatted date function
   const getFormattedDate = useCallback((date = new Date()) => {
@@ -271,8 +281,7 @@ const ChatAppDB = () => {
 
   const handleSettingsOpen = useCallback(() => {
     const localUsername = localStorage.getItem("global-chat-username");
-    if(localUsername)
-    setTempUsername(localUsername)
+    if (localUsername) setTempUsername(localUsername);
     setOpenSettings(true);
   }, []);
 
@@ -286,17 +295,17 @@ const ChatAppDB = () => {
   }, [handleSettingsOpen]);
 
   const handleUsernameSave = useCallback(() => {
-    if(tempUsername)
-    if (tempUsername.trim()) {
-      const selectedUser = userDetails.find(
-        (data) => data.name === tempUsername
-      );
-      if (selectedUser) {
-        setActiveUserDetails(selectedUser);
-        setOpenSettings(false);
-        localStorage.setItem("global-chat-username", tempUsername);
+    if (tempUsername)
+      if (tempUsername.trim()) {
+        const selectedUser = userDetails.find(
+          (data) => data.name === tempUsername
+        );
+        if (selectedUser) {
+          setActiveUserDetails(selectedUser);
+          setOpenSettings(false);
+          localStorage.setItem("global-chat-username", tempUsername);
+        }
       }
-    }
   }, [tempUsername]);
 
   const getRandomUsername = useCallback(() => {
@@ -346,6 +355,9 @@ const ChatAppDB = () => {
 
     return () => window.removeEventListener("resize", setVh);
   }, []);
+
+  const [deletingMsg, setDeletingMsg] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 
 
   return (
@@ -415,9 +427,46 @@ const ChatAppDB = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleSettingsClose}>Cancel</Button>
-            <Button onClick={handleUsernameSave}>Save</Button>
+            <Button variant="outlined" onClick={handleSettingsClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleUsernameSave}>Save</Button>
           </DialogActions>
+
+          <Accordion sx={{mt:2}}>
+            <AccordionSummary
+              expandIcon={<ArrowDropDownIcon />}
+              aria-controls="panel2-content"
+              id="panel2-header"
+            >
+              <Typography component="span">Advance Options</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box display={"flex"} justifyContent={"center"}>
+                {!deletingMsg && !showVideo && (
+                  <Button onClick={()=>(setDeletingMsg(true), setTimeout(()=> setShowVideo(true),8000))} sx={{marginBottom:'5px', background:'red', color:'white'}}><DeleteForeverIcon fontSize="small" sx={{marginRight:'4px'}}/> All Messages</Button>
+                )}
+                {deletingMsg && !showVideo && (
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    gap={2}
+                  >
+                    <Typography fontSize={15} sx={{color:'red'}}>Deleting Messages 💔</Typography>
+                    <ProgressBar />
+                  </Box>
+                )}
+                {showVideo && (
+                  <video
+                    src="videos/henge_joke.mp4"
+                    autoPlay
+                    onEnded={() => (setShowVideo(false), setDeletingMsg(false))}
+                    style={{ width: "100%", height: "147px" }}
+                  />
+                )}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
         </Box>
       </Dialog>
 
@@ -511,44 +560,48 @@ const ChatAppDB = () => {
         }}
       >
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-        <TextField
-  fullWidth
-  variant="outlined"
-  placeholder="Type your message..."
-  value={newMessage}
-  onChange={(e) => setNewMessage(e.target.value)}
-  onKeyPress={handleKeyPress}
-  multiline
-  maxRows={2}
-  size="small"
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton edge="end" onClick={()=>(setOpenImageDialogue(true))} sx={{ color: "#00d9ff", marginRight: "0.5px" }}>
-          <PhotoFilterIcon />
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      borderRadius: "100px",
-      "& fieldset": {
-        borderColor: "white",
-        transition: "all 0.3s",
-      },
-      "&:hover fieldset": {
-        borderColor: "#00d9ff",
-        boxShadow: "0 0 8px rgba(0, 217, 255, 0.5)",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#00d9ff",
-        boxShadow: "0 0 12px rgba(0, 217, 255, 0.7)",
-      },
-    },
-  }}
-/>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Type your message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            multiline
+            maxRows={2}
+            size="small"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    onClick={openImageDialogue}
+                    sx={{ color: "#00d9ff", marginRight: "0.5px" }}
+                  >
+                    <PhotoFilterIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                borderRadius: "100px",
+                "& fieldset": {
+                  borderColor: "white",
+                  transition: "all 0.3s",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#00d9ff",
+                  boxShadow: "0 0 8px rgba(0, 217, 255, 0.5)",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#00d9ff",
+                  boxShadow: "0 0 12px rgba(0, 217, 255, 0.7)",
+                },
+              },
+            }}
+          />
         </Box>
 
         <Button
@@ -573,10 +626,7 @@ const ChatAppDB = () => {
         </Button>
       </Box>
 
-
-
-      {openImageDialog && <ImageConverterDialog openDialogue={openImageDialog} />}
-
+      <ImageConverterDialog ref={childRef} />
     </Container>
   );
 };

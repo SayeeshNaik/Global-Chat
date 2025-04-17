@@ -76,7 +76,7 @@ export const userDetails = [
     },
     {
         name: 'Purni',
-        username: '😗 Pooo',
+        username: '🫣 Pooo',
         notification: '/sounds/rowdybaby.mp3'
     },
     {
