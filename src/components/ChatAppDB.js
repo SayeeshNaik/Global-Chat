@@ -34,6 +34,8 @@ import { userDetails } from "../constants/user-details";
 import SnackbarComponent from "../common/SnackbarComponent";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { notificationSound, textToSpeak } from "../enhancements/enhancements";
+import ImageConverterDialog from "./ImageConverterDialog";
+import PhotoFilterIcon from '@mui/icons-material/PhotoFilter';
 
 // Memoized Message Component to prevent unnecessary re-renders
 const MemoizedMessage = React.memo(({ msg, activeUserDetails }) => {
@@ -132,6 +134,7 @@ const ChatAppDB = () => {
   const [activeUserDetails, setActiveUserDetails] = useState({});
   const listRef = useRef(null);
   const totalMsg = useRef(0);
+  const [openImageDialog, setOpenImageDialogue] = useState(false);
 
   // Memoize formatted date function
   const getFormattedDate = useCallback((date = new Date()) => {
@@ -508,35 +511,44 @@ const ChatAppDB = () => {
         }}
       >
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Type your message..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            multiline
-            maxRows={2}
-            size="small"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                color: "white",
-                borderRadius: "100px",
-                "& fieldset": {
-                  borderColor: "white",
-                  transition: "all 0.3s",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#00d9ff",
-                  boxShadow: "0 0 8px rgba(0, 217, 255, 0.5)",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#00d9ff",
-                  boxShadow: "0 0 12px rgba(0, 217, 255, 0.7)",
-                },
-              },
-            }}
-          />
+        <TextField
+  fullWidth
+  variant="outlined"
+  placeholder="Type your message..."
+  value={newMessage}
+  onChange={(e) => setNewMessage(e.target.value)}
+  onKeyPress={handleKeyPress}
+  multiline
+  maxRows={2}
+  size="small"
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton edge="end" onClick={()=>(setOpenImageDialogue(true))} sx={{ color: "#00d9ff", marginRight: "0.5px" }}>
+          <PhotoFilterIcon />
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+  sx={{
+    "& .MuiOutlinedInput-root": {
+      color: "white",
+      borderRadius: "100px",
+      "& fieldset": {
+        borderColor: "white",
+        transition: "all 0.3s",
+      },
+      "&:hover fieldset": {
+        borderColor: "#00d9ff",
+        boxShadow: "0 0 8px rgba(0, 217, 255, 0.5)",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#00d9ff",
+        boxShadow: "0 0 12px rgba(0, 217, 255, 0.7)",
+      },
+    },
+  }}
+/>
         </Box>
 
         <Button
@@ -560,6 +572,11 @@ const ChatAppDB = () => {
           <SendIcon sx={{ color: "black" }} />
         </Button>
       </Box>
+
+
+
+      {openImageDialog && <ImageConverterDialog openDialogue={openImageDialog} />}
+
     </Container>
   );
 };

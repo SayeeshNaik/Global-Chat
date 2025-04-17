@@ -56,7 +56,7 @@ export const textToSpeak = async (text) => {
       src: text,
       c: 'MP3',
       f: '44khz_16bit_stereo',
-      r: '-2',
+      r: '-3',
       v: 'Fumi' // Note: VoiceRSS doesn't support named voices, this has no effect
     });
   
