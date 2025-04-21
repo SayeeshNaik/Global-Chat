@@ -504,6 +504,7 @@ const ChatAppDB = () => {
         />
 
         <List sx={{ width: "100%", position: "relative", zIndex: 5 }}>
+          <p style={{color:'white', padding:'10px', fontSize:'10px', textAlign:'center',background:'gray', borderRadius:"20px"}}>"Don’t wait to share anything—let’s make this chat explode with funny thoughts! 💥"</p>
           {messages.map((msg, index) => (
             <MemoizedMessage
               key={`${msg.date}-${msg.time}-${msg.sender}-${index}`}

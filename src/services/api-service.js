@@ -65,7 +65,7 @@ export const setupRealtimeUpdates = (callback) => {
           filter: '*'  // Receive all inserts
         },
         (payload) => {
-          console.log('Realtime payload received:', payload); // Debug
+          // console.log('Realtime payload received:', payload); // Debug
           callback({
             eventType: 'INSERT',
             new: payload.new
@@ -73,7 +73,7 @@ export const setupRealtimeUpdates = (callback) => {
         }
       )
       .subscribe((status, err) => {
-        console.log('Subscription status:', status);
+        // console.log('Subscription status:', status);
         if (err) console.error('Subscription error:', err);
       });
   

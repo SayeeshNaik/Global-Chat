@@ -51,7 +51,7 @@ export const userDetails = [
     },
     {
         name: 'Vinya',
-        username: '🏏 Mamaa',
+        username: '🏏 Maama',
         notification: '/sounds/chalaka.mp3'
     },
     {

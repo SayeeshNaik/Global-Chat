@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import FlipMemoryGame from "./GameSector/FlipMemoryGame/FlipMemoryGame";
+import WordGame from "./GameSector/WordGame/WordGame";
 
 // Emoji palette - these will replace pixels
 const EMOJI_PALETTE = [
@@ -263,179 +265,190 @@ const ImageConverterDialog = forwardRef((props, ref) => {
   }, []);
 
   return (
-    <div>
-      {/* Hidden canvases for processing */}
-      <canvas ref={canvasRef} style={{ display: "none" }} />
-      <canvas ref={emojiCanvasRef} style={{ display: "none" }} />
+    // <div>
+    //   {/* Hidden canvases for processing */}
+    //   <canvas ref={canvasRef} style={{ display: "none" }} />
+    //   <canvas ref={emojiCanvasRef} style={{ display: "none" }} />
 
-      {/* <Button variant="contained" color="primary" onClick={handleOpen}>
-        Create Emoji Art
-      </Button> */}
+    //   {/* <Button variant="contained" color="primary" onClick={handleOpen}>
+    //     Create Emoji Art
+    //   </Button> */}
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle
-          sx={{
-            background: "#535353",
-            color: "white",
-            textAlign: "center",
-          }}
-        >
-          Image to Emoji Art Converter
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mb: 1, mt: 2 }}>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              style={{ display: "none" }}
-            />
+    //   <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    //     <DialogTitle
+    //       sx={{
+    //         background: "#535353",
+    //         color: "white",
+    //         textAlign: "center",
+    //       }}
+    //     >
+    //       Image to Emoji Art Converter
+    //     </DialogTitle>
+    //     <DialogContent>
+    //       <Box sx={{ mb: 1, mt: 2 }}>
+    //         <input
+    //           type="file"
+    //           ref={fileInputRef}
+    //           onChange={handleFileChange}
+    //           accept="image/*"
+    //           style={{ display: "none" }}
+    //         />
 
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<CloudUploadIcon />}
-              onClick={triggerFileInput}
-              fullWidth
-              sx={{ background: '#e9fffa', color: 'black'}}
-            >
-              {selectedFile
-                ? selectedFile.name.length > 20
-                  ? selectedFile.name.slice(0, 20) + "..."
-                  : selectedFile.name
-                : "Upload Image"}
-            </Button>
+    //         <Button
+    //           variant="outlined"
+    //           color="primary"
+    //           startIcon={<CloudUploadIcon />}
+    //           onClick={triggerFileInput}
+    //           fullWidth
+    //           sx={{ background: '#e9fffa', color: 'black'}}
+    //         >
+    //           {selectedFile
+    //             ? selectedFile.name.length > 20
+    //               ? selectedFile.name.slice(0, 20) + "..."
+    //               : selectedFile.name
+    //             : "Upload Image"}
+    //         </Button>
 
-            <Typography
-              variant="caption"
-              display="flex"
-              textAlign={"center"}
-              justifyContent={"center"}
-            >
-              Only image files are allowed <br />
-              (JPEG, PNG, etc.)
-            </Typography>
-          </Box>
+    //         <Typography
+    //           variant="caption"
+    //           display="flex"
+    //           textAlign={"center"}
+    //           justifyContent={"center"}
+    //         >
+    //           Only image files are allowed <br />
+    //           (JPEG, PNG, etc.)
+    //         </Typography>
+    //       </Box>
 
-          {previewImage && (
-            <Box sx={{ mt: 3 }}>
-              <Typography variant="h6" fontWeight={'bold'} gutterBottom>
-                Preview
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6} sx={{width:'100%'}}>
-                  <Typography variant="subtitle2" align="center" sx={{background:'black', color:'white'}}>
-                    Original
-                  </Typography>
-                  <Box
-                    component="img"
-                    src={previewImage}
-                    alt="Original preview"
-                    sx={{
-                      width: "100%",
-                      height: "auto",
-                      border: "1px solid #ddd",
-                      borderRadius: 1,
-                      boxShadow: "0px 8px 15px black",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6} sx={{width:'100%'}}>
+    //       {previewImage && (
+    //         <Box sx={{ mt: 3 }}>
+    //           <Typography variant="h6" fontWeight={'bold'} gutterBottom>
+    //             Preview
+    //           </Typography>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12} md={6} sx={{width:'100%'}}>
+    //               <Typography variant="subtitle2" align="center" sx={{background:'black', color:'white'}}>
+    //                 Original
+    //               </Typography>
+    //               <Box
+    //                 component="img"
+    //                 src={previewImage}
+    //                 alt="Original preview"
+    //                 sx={{
+    //                   width: "100%",
+    //                   height: "auto",
+    //                   border: "1px solid #ddd",
+    //                   borderRadius: 1,
+    //                   boxShadow: "0px 8px 15px black",
+    //                 }}
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12} md={6} sx={{width:'100%'}}>
                 
-                  {isConverting ? (
-                    <>
-                    <Typography variant="subtitle2" align="center" sx={{background:'black',color:'white'}}>
-                    Emoji Art
-            </Typography>
-                    <Box
-                      sx={{
-                        minWidth: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: 200,
-                        border: "1px dashed #ddd",
-                        borderRadius: 1,
-                        boxShadow: "0px 8px 15px black",
-                      }}
-                    >
-                      {/* <CircularProgress /> */}
-                      <div class="loader"></div>
-                    </Box>
-                    </>
-                  ) : (
-                    convertedImage && (
-                      <Grid item xs={12} md={6} sx={{width:'100%'}}>
-                        <Typography variant="subtitle2" align="center" sx={{background:'black',color:'white'}}>
-                          Emoji Art
-                        </Typography>
-                        <Box
-                          component="img"
-                          src={convertedImage}
-                          alt="Emoji art preview"
-                          sx={{
-                            width: "100%",
-                            height: "auto",
-                            border: "1px solid #ddd",
-                            borderRadius: 1,
-                            imageRendering: "pixelated",
-                            boxShadow: "0px 8px 15px black",
-                          }}
-                        />
-                        <Box
-                          sx={{
-                            mt: 2,
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Button
-                            sx={{ background: "#00ad00", borderRadius: "10px", marginBottom:2, boxShadow: '2px 3px 8px black'}}
-                            variant="contained"
-                            onClick={handleDownload}
-                            startIcon={<FileDownloadIcon />}
-                          >
-                            Download
-                          </Button>
-                        </Box>
-                      </Grid>
-                    )
-                  )}
-                </Grid>
-              </Grid>
-              <div ref={endRef} />
-            </Box>
-          )}
-        </DialogContent>
-        {previewImage && !isConverting && !convertedImage && (
-          <DialogActions>
-            <Button variant="outlined" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button
-              sx={{ background: "#00a4e5" }}
-              onClick={handleConvert}
-              variant="contained"
-              color="primary"
-              disabled={!selectedFile || isConverting}
-            >
-              {isConverting ? "Creating..." : "Create Emoji Art"}
-            </Button>
-          </DialogActions>
-        )}
+    //               {isConverting ? (
+    //                 <>
+    //                 <Typography variant="subtitle2" align="center" sx={{background:'black',color:'white'}}>
+    //                 Emoji Art
+    //         </Typography>
+    //                 <Box
+    //                   sx={{
+    //                     minWidth: "100%",
+    //                     display: "flex",
+    //                     justifyContent: "center",
+    //                     alignItems: "center",
+    //                     height: 200,
+    //                     border: "1px dashed #ddd",
+    //                     borderRadius: 1,
+    //                     boxShadow: "0px 8px 15px black",
+    //                   }}
+    //                 >
+    //                   {/* <CircularProgress /> */}
+    //                   <div class="loader"></div>
+    //                 </Box>
+    //                 </>
+    //               ) : (
+    //                 convertedImage && (
+    //                   <Grid item xs={12} md={6} sx={{width:'100%'}}>
+    //                     <Typography variant="subtitle2" align="center" sx={{background:'black',color:'white'}}>
+    //                       Emoji Art
+    //                     </Typography>
+    //                     <Box
+    //                       component="img"
+    //                       src={convertedImage}
+    //                       alt="Emoji art preview"
+    //                       sx={{
+    //                         width: "100%",
+    //                         height: "auto",
+    //                         border: "1px solid #ddd",
+    //                         borderRadius: 1,
+    //                         imageRendering: "pixelated",
+    //                         boxShadow: "0px 8px 15px black",
+    //                       }}
+    //                     />
+    //                     <Box
+    //                       sx={{
+    //                         mt: 2,
+    //                         display: "flex",
+    //                         justifyContent: "center",
+    //                       }}
+    //                     >
+    //                       <Button
+    //                         sx={{ background: "#00ad00", borderRadius: "10px", marginBottom:2, boxShadow: '2px 3px 8px black'}}
+    //                         variant="contained"
+    //                         onClick={handleDownload}
+    //                         startIcon={<FileDownloadIcon />}
+    //                       >
+    //                         Download
+    //                       </Button>
+    //                     </Box>
+    //                   </Grid>
+    //                 )
+    //               )}
+    //             </Grid>
+    //           </Grid>
+    //           <div ref={endRef} />
+    //         </Box>
+    //       )}
+    //     </DialogContent>
+    //     {previewImage && !isConverting && !convertedImage && (
+    //       <DialogActions>
+    //         <Button variant="outlined" onClick={handleClose}>
+    //           Cancel
+    //         </Button>
+    //         <Button
+    //           sx={{ background: "#00a4e5" }}
+    //           onClick={handleConvert}
+    //           variant="contained"
+    //           color="primary"
+    //           disabled={!selectedFile || isConverting}
+    //         >
+    //           {isConverting ? "Creating..." : "Create Emoji Art"}
+    //         </Button>
+    //       </DialogActions>
+    //     )}
 
-        <DialogTitle
-          sx={{
-            background: "#535353",
-            color: "white",
-            textAlign: "center",
-          }}
-        >
-        </DialogTitle>
+    //     <DialogTitle
+    //       sx={{
+    //         background: "#535353",
+    //         color: "white",
+    //         textAlign: "center",
+    //       }}
+    //     >
+    //     </DialogTitle>
        
-      </Dialog>
-    </div>
+    //   </Dialog>
+    // </div>
+
+
+    <Dialog style={{overflowX:'hidden'}} open={open} onClose={handleClose} maxWidth="md" fullWidth  
+    PaperProps={{
+      style: {
+        overflow: 'hidden', // hide scroll on Paper
+      }
+    }}>
+      <WordGame/>
+    </Dialog>
+
   );
 });
 
