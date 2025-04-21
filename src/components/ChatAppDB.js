@@ -431,6 +431,7 @@ const ChatAppDB = () => {
             <Button variant="contained" onClick={handleUsernameSave}>Save</Button>
           </DialogActions>
 
+         { messages.length > 20 &&
           <Accordion sx={{mt:2}}>
             <AccordionSummary
               expandIcon={<ArrowDropDownIcon />}
@@ -467,6 +468,7 @@ const ChatAppDB = () => {
               </Box>
             </AccordionDetails>
           </Accordion>
+        }
         </Box>
       </Dialog>
 
